@@ -1,84 +1,99 @@
 ﻿using AdventOfCode2025.Entities;
+using AdventOfCode2025.Services.Day1;
 
-namespace AdventOfCode2025
+namespace AdventOfCode2025;
+
+public static class MainProgramHelpers
 {
-    public static class MainProgramHelpers
+    private static bool _keepAppOpen = true;
+    private static readonly List<MainMenuOption> Options =
+    [
+        new MainMenuOption("Day 1", () => DecryptDocumentAndFindPassword.FindPassword()),
+        new MainMenuOption("Exit", () => _keepAppOpen = false),
+    ];
+
+    public static void HandleMenuNavigation()
     {
-        public static readonly  List<MainMenuOption> Options =
-        [
-            new MainMenuOption("Day 1", () => WriteTemporaryMessage("Day 1")),
-            new MainMenuOption("Day 2", () => WriteTemporaryMessage("Day 2")),
-            new MainMenuOption("Day 3", () => WriteTemporaryMessage("Day 3")),
-            new MainMenuOption("Exit", () => Environment.Exit(0)),
-        ];
+        // Menu position
+        int index = 0;
 
-        public static void HandleMenuNavigation()
+        WriteMenu(Options[index]);
+
+        ConsoleKeyInfo keyInfo;
+        while (_keepAppOpen)
         {
-            // Menu position
-            int index = 0;
+            keyInfo = Console.ReadKey();
 
-            WriteMenu(Options[index]);
-
-            ConsoleKeyInfo keyInfo;
-            do
+            switch (keyInfo.Key)
             {
-                keyInfo = Console.ReadKey();
-
-                switch (keyInfo.Key)
+                case ConsoleKey.DownArrow:
                 {
-                    case ConsoleKey.DownArrow:
+                    if (index + 1 < Options.Count)
                     {
-                        if (index + 1 < Options.Count)
-                        {
-                            index++;
-                            WriteMenu(Options[index]);
-                        }
-
-                        break;
+                        index++;
+                        WriteMenu(Options[index]);
                     }
-                    case ConsoleKey.UpArrow:
+
+                    break;
+                }
+                case ConsoleKey.UpArrow:
+                {
+                    if (index - 1 >= 0)
                     {
-                        if (index - 1 >= 0)
-                        {
-                            index--;
-                            WriteMenu(Options[index]);
-                        }
-
-                        break;
+                        index--;
+                        WriteMenu(Options[index]);
                     }
-                    case ConsoleKey.Enter:
-                        Options[index].Selected.Invoke();
-                        index = 0;
-                        break;
-                }
-            }
-            while (keyInfo.Key is not ConsoleKey.X);
-        }
 
-        static void WriteMenu(MainMenuOption selectedMainMenuOption)
-        {
-            Console.Clear();
-
-            foreach (MainMenuOption option in Options)
-            {
-                if (option == selectedMainMenuOption)
-                {
-                    Console.Write("> ");
+                    break;
                 }
-                else
-                {
-                    Console.Write(" ");
-                }
-
-                Console.WriteLine(option.Name);
+                case ConsoleKey.Enter:
+                    Options[index].Selected.Invoke();
+                    index = 0;
+                    break;
             }
         }
 
-        static void WriteTemporaryMessage(string message)
+        if (_keepAppOpen == false)
         {
-            Console.Clear();
-            Console.WriteLine(message);
-            Thread.Sleep(3000);
+            Environment.Exit(0);
+        }
+    }
+
+    static void WriteMenu(MainMenuOption selectedMainMenuOption)
+    {
+        Console.Clear();
+
+        foreach (MainMenuOption option in Options)
+        {
+            Console.Write(option == selectedMainMenuOption ? "> " : " ");
+
+            Console.WriteLine(option.Name);
+        }
+    }
+
+    public static bool IsDayConfirmed(int day)
+    {
+        Console.Clear();
+        
+        Console.WriteLine($"Are you sure you want to continue with this day {day}? \r\n");
+        Console.WriteLine($"y / n: ");
+        
+        ConsoleKeyInfo keyInfo = Console.ReadKey();
+        switch (keyInfo.Key)
+        {
+            case ConsoleKey.Y:
+                return true;
+            default:
+                WriteMenu(Options.First());
+                return false;
+        }
+    }
+    
+    public static void ClosingStatementOfTheOption()
+    {
+        Console.WriteLine("\r\nPress ENTER to finish the day... and go back to the menu.");
+        if (Console.ReadKey().Key == ConsoleKey.Enter)
+        {
             WriteMenu(Options.First());
         }
     }

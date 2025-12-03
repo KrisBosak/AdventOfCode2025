@@ -1,10 +1,9 @@
-﻿namespace AdventOfCode2025
+﻿namespace AdventOfCode2025;
+    
+class Program
 {
-    class Program
+    static void Main()
     {
-        static void Main()
-        {
-            MainProgramHelpers.HandleMenuNavigation();
-        }
+        MainProgramHelpers.HandleMenuNavigation();
     }
 }
