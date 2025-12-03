@@ -65,7 +65,7 @@ public static class MainProgramHelpers
 
         foreach (MainMenuOption option in Options)
         {
-            Console.Write(option == selectedMainMenuOption ? "> " : " ");
+            Console.Write(option == selectedMainMenuOption ? "> " : " "); // I should probably put this into a const variable
 
             Console.WriteLine(option.Name);
         }
