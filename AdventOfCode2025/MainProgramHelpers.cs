@@ -4,12 +4,12 @@ namespace AdventOfCode2025
 {
     public static class MainProgramHelpers
     {
-        public static readonly  List<Option> _options =
+        public static readonly  List<MainMenuOption> Options =
         [
-            new Option("Day 1", () => WriteTemporaryMessage("Day 1")),
-            new Option("Day 2", () => WriteTemporaryMessage("Day 2")),
-            new Option("Day 3", () => WriteTemporaryMessage("Day 3")),
-            new Option("Exit", () => Environment.Exit(0)),
+            new MainMenuOption("Day 1", () => WriteTemporaryMessage("Day 1")),
+            new MainMenuOption("Day 2", () => WriteTemporaryMessage("Day 2")),
+            new MainMenuOption("Day 3", () => WriteTemporaryMessage("Day 3")),
+            new MainMenuOption("Exit", () => Environment.Exit(0)),
         ];
 
         public static void HandleMenuNavigation()
@@ -17,7 +17,7 @@ namespace AdventOfCode2025
             // Menu position
             int index = 0;
 
-            WriteMenu(_options[index]);
+            WriteMenu(Options[index]);
 
             ConsoleKeyInfo keyInfo;
             do
@@ -28,10 +28,10 @@ namespace AdventOfCode2025
                 {
                     case ConsoleKey.DownArrow:
                     {
-                        if (index + 1 < _options.Count)
+                        if (index + 1 < Options.Count)
                         {
                             index++;
-                            WriteMenu(_options[index]);
+                            WriteMenu(Options[index]);
                         }
 
                         break;
@@ -41,13 +41,13 @@ namespace AdventOfCode2025
                         if (index - 1 >= 0)
                         {
                             index--;
-                            WriteMenu(_options[index]);
+                            WriteMenu(Options[index]);
                         }
 
                         break;
                     }
                     case ConsoleKey.Enter:
-                        _options[index].Selected.Invoke();
+                        Options[index].Selected.Invoke();
                         index = 0;
                         break;
                 }
@@ -55,13 +55,13 @@ namespace AdventOfCode2025
             while (keyInfo.Key is not ConsoleKey.X);
         }
 
-        static void WriteMenu(Option selectedOption)
+        static void WriteMenu(MainMenuOption selectedMainMenuOption)
         {
             Console.Clear();
 
-            foreach (Option option in _options)
+            foreach (MainMenuOption option in Options)
             {
-                if (option == selectedOption)
+                if (option == selectedMainMenuOption)
                 {
                     Console.Write("> ");
                 }
@@ -79,7 +79,7 @@ namespace AdventOfCode2025
             Console.Clear();
             Console.WriteLine(message);
             Thread.Sleep(3000);
-            WriteMenu(_options!.First());
+            WriteMenu(Options.First());
         }
     }
 }
